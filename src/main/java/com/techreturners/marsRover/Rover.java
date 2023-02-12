@@ -1,6 +1,7 @@
 package com.techreturners.marsRover;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,6 +58,10 @@ public class Rover {
 							getAllAvailableDirections()));
 		}
 	}
+	
+	public List<String> convertMovementInputToList(String movementInput) {
+		return new ArrayList<>(Arrays.asList(movementInput.split("")));
+	}
 
 	private boolean isCoordinatesIsNumeric(String x, String y) {
 		return isNumeric(x) && isNumeric(y);
@@ -78,7 +83,7 @@ public class Rover {
 		return max_x < MIN_X || max_y < MIN_Y;
 	}
 
-	public static boolean isNumeric(String number) {
+	private static boolean isNumeric(String number) {
 		if (number == null) {
 			return false;
 		}

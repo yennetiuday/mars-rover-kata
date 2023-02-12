@@ -3,6 +3,9 @@ package com.techreturners.marsRover;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -87,6 +90,16 @@ public class RoverTest {
 		assertEquals(
 				"Invalid input. Rovar Position should contain integer values of x, y coordinates and facing direction seperated by space.",
 				exception.getMessage());
+	}
+
+	@Test
+	public void testConvertMovementInput() {
+		assertEquals(new ArrayList<>(Arrays.asList("M")) , rover.convertMovementInputToList("M"));
+	}
+	
+	@Test
+	public void testConvertMovementInputWithMoreValues() {
+		assertEquals(new ArrayList<>(Arrays.asList("R", "M", "L", "L")) , rover.convertMovementInputToList("RMLL"));
 	}
 
 }
