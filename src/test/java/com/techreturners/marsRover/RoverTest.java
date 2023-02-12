@@ -50,7 +50,7 @@ public class RoverTest {
 		rover.convertRoverInitialPosition("1 2 N");
 		assertEquals(1, rover.getInitial_x());
 		assertEquals(2, rover.getInitial_y());
-		assertEquals("N", rover.getInitial_direction().label);
+		assertEquals("N", rover.getInitial_facing().label);
 	}
 
 	@Test
@@ -94,18 +94,28 @@ public class RoverTest {
 
 	@Test
 	public void testConvertMovementInput() {
-		assertEquals(new ArrayList<>(Arrays.asList("M")) , rover.convertMovementInputToList("M"));
+		assertEquals(new ArrayList<>(Arrays.asList(Movement.MOVE)) , rover.convertMovementInputToList("M"));
 	}
 	
 	@Test
 	public void testConvertMovementInputWithMoreValues() {
-		assertEquals(new ArrayList<>(Arrays.asList("R", "M", "L", "L")) , rover.convertMovementInputToList("RMLL"));
+		assertEquals(new ArrayList<>(Arrays.asList(Movement.RIGHT, Movement.MOVE, Movement.LEFT, Movement.LEFT)) , rover.convertMovementInputToList("RMLL"));
 	}
 	
 	@Test
 	public void testConvertMovementInputWithInvalidValues() {
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> rover.convertMovementInputToList("QP"));
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> rover.convertMovementInputToList("RMQ"));
 		assertEquals("Invalid movement input. Values should be from R L and M." , exception.getMessage());
 	}
-
+	
+	@Test
+	public void testMoveRight() {
+		assertEquals("1 2 E", rover.navigate("1 2 N", "R"));
+	}
+	
+	@Test
+	public void testMoveRightTwice() {
+		assertEquals("1 2 S", rover.navigate("1 2 N", "RR"));
+	}
+	
 }

@@ -10,8 +10,8 @@ public class Rover {
 	private static final String DELIMITTER = " ";
 	private static final int MIN_X = 0, MIN_Y = 0, GRID_SIZE_MAX_LENGTH = 2, POSITION_SIZE_MAX_LENGTH = 3;
 
-	private int max_x, max_y, initial_x, initial_y;
-	private Direction initial_direction;
+	private int max_x, max_y, initial_x, initial_y, final_x, final_y;
+	private Direction initial_facing, final_facing;
 
 	public Rover(String maxSizeOfGrid) {
 		String[] maxSizeOfGridInXYCoordinates = maxSizeOfGrid.split(DELIMITTER);
@@ -39,9 +39,9 @@ public class Rover {
 			throw new IllegalArgumentException(
 					"Invalid value provided for Rover initial position. Value input eg. 1 2 N");
 		} else if (isCoordinatesIsNumeric(initialPosition[0], initialPosition[1])) {
-			initial_x = Integer.valueOf(initialPosition[0]);
-			initial_y = Integer.valueOf(initialPosition[1]);
-			initial_direction = Direction.valueOfLabel(initialPosition[2]);
+			initial_x = final_x = Integer.valueOf(initialPosition[0]);
+			initial_y = final_y = Integer.valueOf(initialPosition[1]);
+			initial_facing = final_facing = Direction.valueOfLabel(initialPosition[2]);
 		} else {
 			throw new NumberFormatException(
 					"Invalid input. Rovar Position should contain integer values of x, y coordinates and facing direction seperated by space.");
@@ -51,24 +51,65 @@ public class Rover {
 			throw new IllegalArgumentException(
 					String.format("Invalid Rover initial position. Value should be between %d %d and %d %d", MIN_X,
 							MIN_Y, max_x, max_y));
-		} else if (Objects.isNull(initial_direction)) {
+		} else if (Objects.isNull(initial_facing)) {
 			throw new IllegalArgumentException(
 					String.format("Invalid Rover initial position. Direction should be one of the following %s",
 							getAllAvailableDirections()));
 		}
 	}
-	
-	public List<String> convertMovementInputToList(String movementInput) {
-		List<String> inputs = new ArrayList<>();
-		for (String input: movementInput.split("")) {
+
+	public List<Movement> convertMovementInputToList(String movementInput) {
+		List<Movement> inputs = new ArrayList<>();
+		for (String input : movementInput.split("")) {
 			Movement movement = Movement.valueOfLabel(input);
-			if(Objects.nonNull(movement)) {
-				inputs.add(movement.label);
+			if (Objects.nonNull(movement)) {
+				inputs.add(movement);
 			} else {
 				throw new IllegalArgumentException("Invalid movement input. Values should be from R L and M.");
 			}
 		}
 		return inputs;
+	}
+
+	public String navigate(String initialPosition, String movements) {
+		convertRoverInitialPosition(initialPosition);
+		List<Movement> movementInputs = convertMovementInputToList(movements);
+		for (Movement movement : movementInputs) {
+			switch (movement) {
+			case RIGHT:
+				rotateRight();
+				break;
+			default:
+				break;
+			}
+		}
+		return finalPosition();
+	}
+
+	private String finalPosition() {
+		StringBuilder finalPositionBuilder = new StringBuilder()
+				.append(final_x).append(DELIMITTER).append(final_y)
+				.append(DELIMITTER).append(final_facing.label);
+		return finalPositionBuilder.toString();
+	}
+
+	private void rotateRight() {
+		switch (final_facing) {
+		case NORTH:
+			final_facing = Direction.EAST;
+			break;
+		case EAST:
+			final_facing = Direction.SOUTH;
+			break;
+		case SOUTH:
+			final_facing = Direction.WEST;
+			break;
+		case WEST:
+			final_facing = Direction.NORTH;
+			break;
+		default:
+			break;
+		}
 	}
 
 	private boolean isCoordinatesIsNumeric(String x, String y) {
@@ -119,8 +160,8 @@ public class Rover {
 		return initial_y;
 	}
 
-	public Direction getInitial_direction() {
-		return initial_direction;
+	public Direction getInitial_facing() {
+		return initial_facing;
 	}
 
 }
