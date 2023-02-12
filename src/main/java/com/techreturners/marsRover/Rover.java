@@ -18,14 +18,76 @@ public class Rover {
 		if (maxSizeOfGridInXYCoordinates.length != GRID_SIZE_MAX_LENGTH) {
 			throw new IllegalArgumentException(
 					"Invalid input. Grid size should contain x and y coordinates seperated by space.");
+		} else if (isCoordinatesIsNumeric(maxSizeOfGridInXYCoordinates[0], maxSizeOfGridInXYCoordinates[1])) {
+			max_x = Integer.valueOf(maxSizeOfGridInXYCoordinates[0]);
+			max_y = Integer.valueOf(maxSizeOfGridInXYCoordinates[1]);
+		} else {
+			throw new NumberFormatException(
+					"Invalid input. Grid size should contain integer values of x and y coordinates seperated by space.");
 		}
-		max_x = Integer.valueOf(maxSizeOfGridInXYCoordinates[0]);
-		max_y = Integer.valueOf(maxSizeOfGridInXYCoordinates[1]);
 
 		if (isGridSizeLessThanOrigin()) {
 			throw new IllegalArgumentException(String
 					.format("Plateau should contain positive coordinates with origin at eg. %d %d", MIN_X, MIN_Y));
 		}
+	}
+
+	public void convertRoverInitialPosition(String roverInitialPosition) {
+		String[] initialPosition = roverInitialPosition.split(DELIMITTER);
+
+		if (initialPosition.length != POSITION_SIZE_MAX_LENGTH) {
+			throw new IllegalArgumentException(
+					"Invalid value provided for Rover initial position. Value input eg. 1 2 N");
+		} else if (isCoordinatesIsNumeric(initialPosition[0], initialPosition[1])) {
+			initial_x = Integer.valueOf(initialPosition[0]);
+			initial_y = Integer.valueOf(initialPosition[1]);
+			initial_direction = Direction.valueOfLabel(initialPosition[2]);
+		} else {
+			throw new NumberFormatException(
+					"Invalid input. Rovar Position should contain integer values of x, y coordinates and facing direction seperated by space.");
+		}
+
+		if (isInitialPositionInLimitsOfPlateau()) {
+			throw new IllegalArgumentException(
+					String.format("Invalid Rover initial position. Value should be between %d %d and %d %d", MIN_X,
+							MIN_Y, max_x, max_y));
+		} else if (Objects.isNull(initial_direction)) {
+			throw new IllegalArgumentException(
+					String.format("Invalid Rover initial position. Direction should be one of the following %s",
+							getAllAvailableDirections()));
+		}
+	}
+
+	private boolean isCoordinatesIsNumeric(String x, String y) {
+		return isNumeric(x) && isNumeric(y);
+	}
+
+	private String getAllAvailableDirections() {
+		List<String> directions = new ArrayList<>();
+		for (Direction e : Direction.values()) {
+			directions.add(e.label);
+		}
+		return directions.stream().collect(Collectors.joining(", "));
+	}
+
+	private boolean isInitialPositionInLimitsOfPlateau() {
+		return initial_x > max_x || initial_y > max_y || MIN_X > initial_x || MIN_Y > initial_y;
+	}
+
+	private boolean isGridSizeLessThanOrigin() {
+		return max_x < MIN_X || max_y < MIN_Y;
+	}
+
+	public static boolean isNumeric(String number) {
+		if (number == null) {
+			return false;
+		}
+		try {
+			Integer.parseInt(number);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 
 	public int getMax_x() {
@@ -46,45 +108,6 @@ public class Rover {
 
 	public Direction getInitial_direction() {
 		return initial_direction;
-	}
-
-	public void convertRoverInitialPosition(String roverInitialPosition) {
-		String[] initialPosition = roverInitialPosition.split(DELIMITTER);
-
-		if (initialPosition.length != POSITION_SIZE_MAX_LENGTH) {
-			throw new IllegalArgumentException(
-					"Invalid value provided for Rover initial position. Value input eg. 1 2 N");
-		}
-
-		initial_x = Integer.valueOf(initialPosition[0]);
-		initial_y = Integer.valueOf(initialPosition[1]);
-		initial_direction = Direction.valueOfLabel(initialPosition[2]);
-
-		if (isInitialPositionInLimitsOfPlateau()) {
-			throw new IllegalArgumentException(
-					String.format("Invalid Rover initial position. Value should be between %d %d and %d %d", MIN_X,
-							MIN_Y, max_x, max_y));
-		} else if (Objects.isNull(initial_direction)) {
-			throw new IllegalArgumentException(
-					String.format("Invalid Rover initial position. Direction should be one of the following %s",
-							getAllAvailableDirections()));
-		}
-	}
-
-	private String getAllAvailableDirections() {
-		List<String> directions = new ArrayList<>();
-		for (Direction e : Direction.values()) {
-			directions.add(e.label);
-		}
-		return directions.stream().collect(Collectors.joining(", "));
-	}
-
-	private boolean isInitialPositionInLimitsOfPlateau() {
-		return initial_x > max_x || initial_y > max_y || MIN_X > initial_x || MIN_Y > initial_y;
-	}
-
-	private boolean isGridSizeLessThanOrigin() {
-		return max_x < MIN_X || max_y < MIN_Y;
 	}
 
 }
