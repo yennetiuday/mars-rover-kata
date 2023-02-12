@@ -101,5 +101,11 @@ public class RoverTest {
 	public void testConvertMovementInputWithMoreValues() {
 		assertEquals(new ArrayList<>(Arrays.asList("R", "M", "L", "L")) , rover.convertMovementInputToList("RMLL"));
 	}
+	
+	@Test
+	public void testConvertMovementInputWithInvalidValues() {
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> rover.convertMovementInputToList("QP"));
+		assertEquals("Invalid movement input. Values should be from R L and M." , exception.getMessage());
+	}
 
 }

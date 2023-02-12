@@ -1,7 +1,6 @@
 package com.techreturners.marsRover;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,7 +59,16 @@ public class Rover {
 	}
 	
 	public List<String> convertMovementInputToList(String movementInput) {
-		return new ArrayList<>(Arrays.asList(movementInput.split("")));
+		List<String> inputs = new ArrayList<>();
+		for (String input: movementInput.split("")) {
+			Movement movement = Movement.valueOfLabel(input);
+			if(Objects.nonNull(movement)) {
+				inputs.add(movement.label);
+			} else {
+				throw new IllegalArgumentException("Invalid movement input. Values should be from R L and M.");
+			}
+		}
+		return inputs;
 	}
 
 	private boolean isCoordinatesIsNumeric(String x, String y) {
