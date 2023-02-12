@@ -79,6 +79,9 @@ public class Rover {
 			case RIGHT:
 				rotateRight();
 				break;
+			case LEFT:
+				rotateLeft();
+				break;
 			default:
 				break;
 			}
@@ -110,6 +113,25 @@ public class Rover {
 		default:
 			break;
 		}
+	}
+
+	private void rotateLeft() {
+		switch (final_facing) {
+		case NORTH:
+			final_facing = Direction.WEST;
+			break;
+		case WEST:
+			final_facing = Direction.SOUTH;
+			break;
+		case SOUTH:
+			final_facing = Direction.EAST;
+			break;
+		case EAST:
+			final_facing = Direction.NORTH;
+			break;
+		default:
+			break;
+		}		
 	}
 
 	private boolean isCoordinatesIsNumeric(String x, String y) {

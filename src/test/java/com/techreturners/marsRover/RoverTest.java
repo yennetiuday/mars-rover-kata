@@ -118,4 +118,9 @@ public class RoverTest {
 		assertEquals("1 2 S", rover.navigate("1 2 N", "RR"));
 	}
 	
+	@Test
+	public void testMoveLeftTwice() {
+		assertEquals("1 2 S", rover.navigate("1 2 N", "LL"));
+	}
+	
 }
