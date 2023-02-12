@@ -7,15 +7,19 @@ public enum Direction {
 	EAST("E"),
 	WEST("W");
 	
-	public final String label;
+	private final String value;
 	
-	private Direction(String label) {
-		this.label = label;
+	private Direction(String value) {
+		this.value = value;
 	}
 	
-	public static Direction valueOfLabel(String label) {
+	public String value() {
+		return value;
+	}
+	
+	public static Direction valueOfLabel(String value) {
 	    for (Direction d : values()) {
-	        if (d.label.equals(label)) {
+	        if (d.value.equals(value)) {
 	            return d;
 	        }
 	    }

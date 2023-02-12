@@ -15,13 +15,13 @@ public class RoverTest {
 
 	@BeforeEach
 	void setUp() {
-		rover = new Rover("5 4");
+		rover = new Rover("5 5");
 	}
 
 	@Test
 	public void testConvertInputMaxGridSize() {
 		assertEquals(5, rover.getMax_x());
-		assertEquals(4, rover.getMax_y());
+		assertEquals(5, rover.getMax_y());
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class RoverTest {
 		rover.convertRoverInitialPosition("1 2 N");
 		assertEquals(1, rover.getInitial_x());
 		assertEquals(2, rover.getInitial_y());
-		assertEquals("N", rover.getInitial_facing().label);
+		assertEquals("N", rover.getInitial_facing().value());
 	}
 
 	@Test
@@ -65,14 +65,14 @@ public class RoverTest {
 	public void testWrongValueInputForRoverInitialPositionWithNegativeValues() {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> rover.convertRoverInitialPosition("-1 2 N"));
-		assertEquals("Invalid Rover initial position. Value should be between 0 0 and 5 4", exception.getMessage());
+		assertEquals("Invalid Rover initial position. Value should be between 0 0 and 5 5", exception.getMessage());
 	}
 
 	@Test
 	public void testWrongValueInputForRoverInitialPositionWithValuesGreaterThanGridSize() {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
 				() -> rover.convertRoverInitialPosition("1 7 N"));
-		assertEquals("Invalid Rover initial position. Value should be between 0 0 and 5 4", exception.getMessage());
+		assertEquals("Invalid Rover initial position. Value should be between 0 0 and 5 5", exception.getMessage());
 	}
 
 	@Test
@@ -109,18 +109,40 @@ public class RoverTest {
 	}
 	
 	@Test
-	public void testMoveRight() {
+	public void testMoveRight() throws Exception {
 		assertEquals("1 2 E", rover.navigate("1 2 N", "R"));
 	}
 	
 	@Test
-	public void testMoveRightTwice() {
+	public void testRotateRightTwice() throws Exception {
 		assertEquals("1 2 S", rover.navigate("1 2 N", "RR"));
 	}
 	
 	@Test
-	public void testMoveLeftTwice() {
+	public void testRotateLeftTwice() throws Exception {
 		assertEquals("1 2 S", rover.navigate("1 2 N", "LL"));
+	}
+	
+	@Test
+	public void testMoveRover() throws Exception {
+		assertEquals("1 3 N", rover.navigate("1 2 N", "LMLMLMLMM"));
+	}
+	
+	@Test
+	public void testMoveRover2() throws Exception {
+		assertEquals("5 1 E", rover.navigate("3 3 E", "MMRMMRMRRM"));
+	}
+	
+	@Test
+	public void testMoveRoverMovementInputOverMaxLimit() {
+		Exception exception = assertThrows(Exception.class, () -> rover.navigate("3 3 E", "MMRMMRMRRMM"));
+		assertEquals("Already reached max limit, provide valid movement input." , exception.getMessage());
+	}
+	
+	@Test
+	public void testMoveRoverMovementInputLessThanMinLimit() {
+		Exception exception = assertThrows(Exception.class, () -> rover.navigate("3 3 E", "MMRMMMMRMRRMM"));
+		assertEquals("Already reached min limit, provide valid movement input." , exception.getMessage());
 	}
 	
 }

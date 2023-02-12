@@ -4,15 +4,19 @@ public enum Movement {
 
 	RIGHT("R"), LEFT("L"), MOVE("M");
 
-	public final String label;
+	private final String value;
 
-	private Movement(String label) {
-		this.label = label;
+	private Movement(String value) {
+		this.value = value;
+	}
+	
+	public String value() {
+		return value;
 	}
 
-	public static Movement valueOfLabel(String label) {
+	public static Movement valueOfLabel(String value) {
 		for (Movement m : values()) {
-			if (m.label.equals(label)) {
+			if (m.value.equals(value)) {
 				return m;
 			}
 		}

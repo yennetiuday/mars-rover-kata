@@ -71,7 +71,7 @@ public class Rover {
 		return inputs;
 	}
 
-	public String navigate(String initialPosition, String movements) {
+	public String navigate(String initialPosition, String movements) throws Exception {
 		convertRoverInitialPosition(initialPosition);
 		List<Movement> movementInputs = convertMovementInputToList(movements);
 		for (Movement movement : movementInputs) {
@@ -81,6 +81,9 @@ public class Rover {
 				break;
 			case LEFT:
 				rotateLeft();
+				break;
+			case MOVE:
+				moveRover();
 				break;
 			default:
 				break;
@@ -92,7 +95,7 @@ public class Rover {
 	private String finalPosition() {
 		StringBuilder finalPositionBuilder = new StringBuilder()
 				.append(final_x).append(DELIMITTER).append(final_y)
-				.append(DELIMITTER).append(final_facing.label);
+				.append(DELIMITTER).append(final_facing.value());
 		return finalPositionBuilder.toString();
 	}
 
@@ -133,6 +136,33 @@ public class Rover {
 			break;
 		}		
 	}
+	
+	private void moveRover() throws Exception {
+		switch (final_facing) {
+		case NORTH:
+			final_y++;
+			if(final_y > max_y)
+				throw new Exception("Already reached max limit, provide valid movement input.");
+			break;
+		case EAST:
+			final_x++;
+			if(final_x > max_x)
+				throw new Exception("Already reached max limit, provide valid movement input.");
+			break;
+		case SOUTH:
+			final_y--;
+			if(final_y < MIN_Y)
+				throw new Exception("Already reached min limit, provide valid movement input.");
+			break;
+		case WEST:
+			final_x--;
+			if(final_x < MIN_X)
+				throw new Exception("Already reached min limit, provide valid movement input.");
+			break;
+		default:
+			break;
+		}
+	}
 
 	private boolean isCoordinatesIsNumeric(String x, String y) {
 		return isNumeric(x) && isNumeric(y);
@@ -141,7 +171,7 @@ public class Rover {
 	private String getAllAvailableDirections() {
 		List<String> directions = new ArrayList<>();
 		for (Direction e : Direction.values()) {
-			directions.add(e.label);
+			directions.add(e.value());
 		}
 		return directions.stream().collect(Collectors.joining(", "));
 	}
