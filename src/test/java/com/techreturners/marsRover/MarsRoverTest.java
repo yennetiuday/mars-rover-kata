@@ -18,7 +18,7 @@ public class MarsRoverTest {
 	@Test
 	public void testWrongValueInputForMaxSize() {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new MarsRover("-1 2 2"));
-		assertEquals("Invalid input. Grid size should contain x and y coordinates seperated by space.",
+		assertEquals("Invalid input. Grid size should contain x and y coordinates separated by space.",
 				exception.getMessage());
 	}
 

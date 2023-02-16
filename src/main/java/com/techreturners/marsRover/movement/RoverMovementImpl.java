@@ -8,7 +8,7 @@ import java.util.List;
 
 public class RoverMovementImpl implements VehicleMovement{
 
-    private Util util;
+    private final Util util;
     private static final String REACHED_MAX_LIMIT = "Already reached max limit, provide valid movement input.";
     private static final String REACH_MIN_LIMIT = "Already reached min limit, provide valid movement input.";
 

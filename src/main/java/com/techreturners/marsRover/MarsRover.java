@@ -12,12 +12,14 @@ public class MarsRover {
 
 	private static final int GRID_SIZE_MAX_LENGTH = 2, POSITION_SIZE_MAX_LENGTH = 3;
 	private static List<String> roverFinalPositions;
+
 	private final RoverCoordinates gridMinCoordinates;
 	private final RoverCoordinates gridMaxCoordinates;
 	private final VehicleMovement roverMovement;
+	private final Util util;
+
 	private RoverCoordinates roverInitialCoordinates;
 	private RoverCoordinates roverFinalCoordinates;
-	private Util util;
 
 	public MarsRover(String maxSizeOfGrid) {
 		gridMinCoordinates = new RoverCoordinates(0, 0, null);
@@ -27,7 +29,7 @@ public class MarsRover {
 		String[] maxSizeOfGridInXYCoordinates = maxSizeOfGrid.trim().split(Util.DELIMITER);
 		if (maxSizeOfGridInXYCoordinates.length != GRID_SIZE_MAX_LENGTH) {
 			throw new IllegalArgumentException(
-					"Invalid input. Grid size should contain x and y coordinates seperated by space.");
+					"Invalid input. Grid size should contain x and y coordinates separated by space.");
 		} else if (isCoordinatesIsNumeric(maxSizeOfGridInXYCoordinates[0], maxSizeOfGridInXYCoordinates[1])) {
 			gridMaxCoordinates = new RoverCoordinates(Integer.parseInt(maxSizeOfGridInXYCoordinates[0]),
 					Integer.parseInt(maxSizeOfGridInXYCoordinates[1]), null);
@@ -84,7 +86,7 @@ public class MarsRover {
 					Integer.parseInt(initialPosition[1]), Direction.valueOfLabel(initialPosition[2]));
 		} else {
 			throw new NumberFormatException(
-					"Invalid input. Rovar Position should contain integer values of x, y coordinates and facing direction seperated by space.");
+					"Invalid input. Rover Position should contain integer values of x, y coordinates and facing direction separated by space.");
 		}
 
 		if (isInitialPositionInLimitsOfPlateau()) {
