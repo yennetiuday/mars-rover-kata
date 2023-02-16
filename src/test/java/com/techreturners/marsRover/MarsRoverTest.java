@@ -38,7 +38,7 @@ public class MarsRoverTest {
 	public void testWrongValueInputForMaxSizeWithNonNumericValues() {
 		NumberFormatException exception = assertThrows(NumberFormatException.class, () -> new MarsRover("N 1 "));
 		assertEquals(
-				"Invalid input. Grid size should contain integer values of x and y coordinates seperated by space.",
+				"Invalid input. Grid size should contain integer values of x and y coordinates separated by space.",
 				exception.getMessage());
 	}
 	

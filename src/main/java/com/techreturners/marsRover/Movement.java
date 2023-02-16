@@ -16,7 +16,7 @@ public enum Movement {
 
 	public static Movement valueOfLabel(String value) {
 		for (Movement m : values()) {
-			if (m.value.equals(value)) {
+			if (m.value.equals(value.toUpperCase())) {
 				return m;
 			}
 		}

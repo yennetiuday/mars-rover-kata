@@ -19,7 +19,7 @@ public enum Direction {
 	
 	public static Direction valueOfLabel(String value) {
 	    for (Direction d : values()) {
-	        if (d.value.equals(value)) {
+	        if (d.value.equals(value.toUpperCase())) {
 	            return d;
 	        }
 	    }
