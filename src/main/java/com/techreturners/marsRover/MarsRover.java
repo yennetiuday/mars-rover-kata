@@ -16,7 +16,6 @@ public class MarsRover {
 	private final RoverCoordinates gridMinCoordinates;
 	private final RoverCoordinates gridMaxCoordinates;
 	private final VehicleMovement roverMovement;
-	private final Util util;
 
 	private RoverCoordinates roverInitialCoordinates;
 	private RoverCoordinates roverFinalCoordinates;
@@ -25,7 +24,6 @@ public class MarsRover {
 		gridMinCoordinates = new RoverCoordinates(0, 0, null);
 		roverFinalPositions = new ArrayList<>();
 		roverMovement = new RoverMovementImpl();
-		util = new Util();
 		String[] maxSizeOfGridInXYCoordinates = maxSizeOfGrid.trim().split(Util.DELIMITER);
 		if (maxSizeOfGridInXYCoordinates.length != GRID_SIZE_MAX_LENGTH) {
 			throw new IllegalArgumentException(
@@ -60,7 +58,7 @@ public class MarsRover {
 					roverMovement.move(roverFinalPositions, gridMinCoordinates,
 							gridMaxCoordinates, roverFinalCoordinates);
 				} catch (Exception e) {
-					roverFinalPositions.add(util.finalPosition(roverFinalCoordinates));
+					roverFinalPositions.add(Util.finalPosition(roverFinalCoordinates));
 					throw new Exception(e.getMessage());
 				}
 				break;
@@ -68,7 +66,7 @@ public class MarsRover {
 				break;
 			}
 		}
-		String finalPosition = util.finalPosition(roverFinalCoordinates);
+		String finalPosition = Util.finalPosition(roverFinalCoordinates);
 		roverFinalPositions.add(finalPosition);
 		return finalPosition;
 	}

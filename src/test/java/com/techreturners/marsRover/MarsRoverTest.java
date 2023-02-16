@@ -3,6 +3,7 @@ package com.techreturners.marsRover;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.techreturners.marsRover.util.Util;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -64,13 +65,13 @@ public class MarsRoverTest {
 	@Test
 	public void testMoveRoverMovementInputOverMaxLimit() {
 		Exception exception = assertThrows(Exception.class, () -> rover.navigate("3 3 E", "MMRMMRMRRMM"));
-		assertEquals("Already reached max limit, provide valid movement input." , exception.getMessage());
+		assertEquals(Util.REACHED_MAX_LIMIT, exception.getMessage());
 	}
 	
 	@Test
 	public void testMoveRoverMovementInputLessThanMinLimit() {
 		Exception exception = assertThrows(Exception.class, () -> rover.navigate("3 3 E", "MMRMMMMRMRRMM"));
-		assertEquals("Already reached min limit, provide valid movement input." , exception.getMessage());
+		assertEquals(Util.REACH_MIN_LIMIT , exception.getMessage());
 	}
 	
 }

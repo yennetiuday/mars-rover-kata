@@ -8,14 +8,6 @@ import java.util.List;
 
 public class RoverMovementImpl implements VehicleMovement{
 
-    private final Util util;
-    private static final String REACHED_MAX_LIMIT = "Already reached max limit, provide valid movement input.";
-    private static final String REACH_MIN_LIMIT = "Already reached min limit, provide valid movement input.";
-
-    public RoverMovementImpl() {
-        util = new Util();
-    }
-
     @Override
     public void turnRight(RoverCoordinates coordinates) {
         switch (coordinates.getFacing()) {
@@ -47,7 +39,7 @@ public class RoverMovementImpl implements VehicleMovement{
             case NORTH -> {
                 roverFinalCoordinates.setY(roverFinalCoordinates.getY() + 1);
                 if (roverFinalCoordinates.getY() > gridMaxCoordinates.getY()) {
-                    throw new Exception(REACHED_MAX_LIMIT);
+                    throw new Exception(Util.REACHED_MAX_LIMIT);
                 } else if (isCollisionOccurred(roverFinalPositions, roverFinalCoordinates)) {
                     roverFinalCoordinates.setY(roverFinalCoordinates.getY() - 1);
                     throw new Exception(getRoverCollidedMessage(roverFinalCoordinates));
@@ -56,7 +48,7 @@ public class RoverMovementImpl implements VehicleMovement{
             case EAST -> {
                 roverFinalCoordinates.setX(roverFinalCoordinates.getX() + 1);
                 if (roverFinalCoordinates.getX() > gridMaxCoordinates.getX()) {
-                    throw new Exception(REACHED_MAX_LIMIT);
+                    throw new Exception(Util.REACHED_MAX_LIMIT);
                 } else if (isCollisionOccurred(roverFinalPositions, roverFinalCoordinates)) {
                     roverFinalCoordinates.setX(roverFinalCoordinates.getX() - 1);
                     throw new Exception(getRoverCollidedMessage(roverFinalCoordinates));
@@ -65,7 +57,7 @@ public class RoverMovementImpl implements VehicleMovement{
             case SOUTH -> {
                 roverFinalCoordinates.setY(roverFinalCoordinates.getY() - 1);
                 if (roverFinalCoordinates.getY() < gridMinCoordinates.getY()) {
-                    throw new Exception(REACH_MIN_LIMIT);
+                    throw new Exception(Util.REACH_MIN_LIMIT);
                 } else if (isCollisionOccurred(roverFinalPositions, roverFinalCoordinates)) {
                     roverFinalCoordinates.setY(roverFinalCoordinates.getY() + 1);
                     throw new Exception(getRoverCollidedMessage(roverFinalCoordinates));
@@ -74,7 +66,7 @@ public class RoverMovementImpl implements VehicleMovement{
             case WEST -> {
                 roverFinalCoordinates.setX(roverFinalCoordinates.getX() - 1);
                 if (roverFinalCoordinates.getX() < gridMinCoordinates.getX()) {
-                    throw new Exception(REACH_MIN_LIMIT);
+                    throw new Exception(Util.REACH_MIN_LIMIT);
                 } else if (isCollisionOccurred(roverFinalPositions, roverFinalCoordinates)) {
                     roverFinalCoordinates.setX(roverFinalCoordinates.getX() + 1);
                     throw new Exception(getRoverCollidedMessage(roverFinalCoordinates));
@@ -87,11 +79,11 @@ public class RoverMovementImpl implements VehicleMovement{
 
     private String getRoverCollidedMessage(RoverCoordinates roverFinalCoordinates) {
         return String.format("Collision occurred rover stopped at: %s",
-                util.finalPosition(roverFinalCoordinates));
+                Util.finalPosition(roverFinalCoordinates));
     }
 
     private boolean isCollisionOccurred(List<String> roverFinalPositions, RoverCoordinates roverFinalCoordinates) {
-        return roverFinalPositions.contains(util.finalPosition(roverFinalCoordinates));
+        return roverFinalPositions.contains(Util.finalPosition(roverFinalCoordinates));
     }
 
 }
