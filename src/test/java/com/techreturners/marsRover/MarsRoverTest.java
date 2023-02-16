@@ -16,12 +16,6 @@ public class MarsRoverTest {
 	}
 
 	@Test
-	public void testConvertInputMaxGridSize() {
-		assertEquals(5, rover.getGridMaxCoordinates().getX());
-		assertEquals(5, rover.getGridMaxCoordinates().getY());
-	}
-
-	@Test
 	public void testWrongValueInputForMaxSize() {
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new MarsRover("-1 2 2"));
 		assertEquals("Invalid input. Grid size should contain x and y coordinates seperated by space.",
@@ -41,7 +35,7 @@ public class MarsRoverTest {
 				"Invalid input. Grid size should contain integer values of x and y coordinates separated by space.",
 				exception.getMessage());
 	}
-	
+
 	@Test
 	public void testMoveRight() throws Exception {
 		assertEquals("1 2 E", rover.navigate("1 2 N", "R"));

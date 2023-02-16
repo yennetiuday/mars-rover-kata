@@ -1,32 +1,36 @@
 package com.techreturners.marsRover;
 
+import com.techreturners.marsRover.movement.RoverMovementImpl;
+import com.techreturners.marsRover.movement.VehicleMovement;
+import com.techreturners.marsRover.util.Util;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MarsRover {
 
-	private static final String DELIMITTER = " ";
 	private static final int GRID_SIZE_MAX_LENGTH = 2, POSITION_SIZE_MAX_LENGTH = 3;
-
-	private RoverCoordinates gridMinCoordinates;
-	private RoverCoordinates gridMaxCoordinates;
+	private static List<String> roverFinalPositions;
+	private final RoverCoordinates gridMinCoordinates;
+	private final RoverCoordinates gridMaxCoordinates;
+	private final VehicleMovement roverMovement;
 	private RoverCoordinates roverInitialCoordinates;
 	private RoverCoordinates roverFinalCoordinates;
-
-	private static List<String> roverFinalPositions;
+	private Util util;
 
 	public MarsRover(String maxSizeOfGrid) {
 		gridMinCoordinates = new RoverCoordinates(0, 0, null);
 		roverFinalPositions = new ArrayList<>();
-		String[] maxSizeOfGridInXYCoordinates = maxSizeOfGrid.trim().split(DELIMITTER);
+		roverMovement = new RoverMovementImpl();
+		util = new Util();
+		String[] maxSizeOfGridInXYCoordinates = maxSizeOfGrid.trim().split(Util.DELIMITER);
 		if (maxSizeOfGridInXYCoordinates.length != GRID_SIZE_MAX_LENGTH) {
 			throw new IllegalArgumentException(
 					"Invalid input. Grid size should contain x and y coordinates seperated by space.");
 		} else if (isCoordinatesIsNumeric(maxSizeOfGridInXYCoordinates[0], maxSizeOfGridInXYCoordinates[1])) {
-			gridMaxCoordinates = new RoverCoordinates(Integer.valueOf(maxSizeOfGridInXYCoordinates[0]),
-					Integer.valueOf(maxSizeOfGridInXYCoordinates[1]), null);
+			gridMaxCoordinates = new RoverCoordinates(Integer.parseInt(maxSizeOfGridInXYCoordinates[0]),
+					Integer.parseInt(maxSizeOfGridInXYCoordinates[1]), null);
 		} else {
 			throw new NumberFormatException(
 					"Invalid input. Grid size should contain integer values of x and y coordinates separated by space.");
@@ -44,16 +48,17 @@ public class MarsRover {
 		for (Movement movement : movementInputs) {
 			switch (movement) {
 			case RIGHT:
-				rotateRight();
+				roverMovement.turnRight(roverFinalCoordinates);
 				break;
 			case LEFT:
-				rotateLeft();
+				roverMovement.turnLeft(roverFinalCoordinates);
 				break;
 			case MOVE:
 				try {
-					moveRover();
+					roverMovement.move(roverFinalPositions, gridMinCoordinates,
+							gridMaxCoordinates, roverFinalCoordinates);
 				} catch (Exception e) {
-					roverFinalPositions.add(finalPosition());
+					roverFinalPositions.add(util.finalPosition(roverFinalCoordinates));
 					throw new Exception(e.getMessage());
 				}
 				break;
@@ -61,29 +66,22 @@ public class MarsRover {
 				break;
 			}
 		}
-		String finalPosition = finalPosition();
+		String finalPosition = util.finalPosition(roverFinalCoordinates);
 		roverFinalPositions.add(finalPosition);
 		return finalPosition;
 	}
 
-	private String finalPosition() {
-		StringBuilder finalPositionBuilder = new StringBuilder().append(roverFinalCoordinates.getX()).append(DELIMITTER)
-				.append(roverFinalCoordinates.getY()).append(DELIMITTER)
-				.append(roverFinalCoordinates.getFacing().value());
-		return finalPositionBuilder.toString();
-	}
-
 	private void convertRoverInitialPosition(String roverInitialPosition) {
-		String[] initialPosition = roverInitialPosition.split(DELIMITTER);
+		String[] initialPosition = roverInitialPosition.split(Util.DELIMITER);
 
 		if (initialPosition.length != POSITION_SIZE_MAX_LENGTH) {
 			throw new IllegalArgumentException(
 					"Invalid value provided for Rover initial position. Value input eg. 1 2 N");
 		} else if (isCoordinatesIsNumeric(initialPosition[0], initialPosition[1])) {
-			roverInitialCoordinates = new RoverCoordinates(Integer.valueOf(initialPosition[0]),
-					Integer.valueOf(initialPosition[1]), Direction.valueOfLabel(initialPosition[2]));
-			roverFinalCoordinates = new RoverCoordinates(Integer.valueOf(initialPosition[0]),
-					Integer.valueOf(initialPosition[1]), Direction.valueOfLabel(initialPosition[2]));
+			roverInitialCoordinates = new RoverCoordinates(Integer.parseInt(initialPosition[0]),
+					Integer.parseInt(initialPosition[1]), Direction.valueOfLabel(initialPosition[2]));
+			roverFinalCoordinates = new RoverCoordinates(Integer.parseInt(initialPosition[0]),
+					Integer.parseInt(initialPosition[1]), Direction.valueOfLabel(initialPosition[2]));
 		} else {
 			throw new NumberFormatException(
 					"Invalid input. Rovar Position should contain integer values of x, y coordinates and facing direction seperated by space.");
@@ -147,108 +145,7 @@ public class MarsRover {
 		for (Direction e : Direction.values()) {
 			directions.add(e.value());
 		}
-		return directions.stream().collect(Collectors.joining(", "));
-	}
-
-	private void rotateRight() {
-		switch (roverFinalCoordinates.getFacing()) {
-		case NORTH:
-			roverFinalCoordinates.setFacing(Direction.EAST);
-			break;
-		case EAST:
-			roverFinalCoordinates.setFacing(Direction.SOUTH);
-			break;
-		case SOUTH:
-			roverFinalCoordinates.setFacing(Direction.WEST);
-			break;
-		case WEST:
-			roverFinalCoordinates.setFacing(Direction.NORTH);
-			break;
-		default:
-			break;
-		}
-	}
-
-	private void rotateLeft() {
-		switch (roverFinalCoordinates.getFacing()) {
-		case NORTH:
-			roverFinalCoordinates.setFacing(Direction.WEST);
-			break;
-		case WEST:
-			roverFinalCoordinates.setFacing(Direction.SOUTH);
-			break;
-		case SOUTH:
-			roverFinalCoordinates.setFacing(Direction.EAST);
-			break;
-		case EAST:
-			roverFinalCoordinates.setFacing(Direction.NORTH);
-			break;
-		default:
-			break;
-		}
-	}
-
-	private void moveRover() throws Exception {
-		switch (roverFinalCoordinates.getFacing()) {
-		case NORTH:
-			roverFinalCoordinates.setY(roverFinalCoordinates.getY() + 1);
-			if (roverFinalCoordinates.getY() > gridMaxCoordinates.getY()) {
-				throw new Exception("Already reached max limit, provide valid movement input.");
-			} else if(isCollisionOccurred()){
-				roverFinalCoordinates.setY(roverFinalCoordinates.getY() - 1);
-				throw new Exception(String.format("Collision occurred rover stopped at: %s", finalPosition()));
-			}
-			break;
-		case EAST:
-			roverFinalCoordinates.setX(roverFinalCoordinates.getX() + 1);
-			if (roverFinalCoordinates.getX() > gridMaxCoordinates.getX()) {
-				throw new Exception("Already reached max limit, provide valid movement input.");
-			} else if(isCollisionOccurred()){
-				roverFinalCoordinates.setX(roverFinalCoordinates.getX() - 1);
-				throw new Exception(String.format("Collision occurred rover stopped at: %s", finalPosition()));
-			}
-			break;
-		case SOUTH:
-			roverFinalCoordinates.setY(roverFinalCoordinates.getY() - 1);
-			if (roverFinalCoordinates.getY() < gridMinCoordinates.getY()) {
-				throw new Exception("Already reached min limit, provide valid movement input.");
-			} else if(isCollisionOccurred()){
-				roverFinalCoordinates.setY(roverFinalCoordinates.getY() + 1);
-				throw new Exception(String.format("Collision occurred rover stopped at: %s", finalPosition()));
-			}
-			break;
-		case WEST:
-			roverFinalCoordinates.setX(roverFinalCoordinates.getX() - 1);
-			if (roverFinalCoordinates.getX() < gridMinCoordinates.getX()) {
-				throw new Exception("Already reached min limit, provide valid movement input.");
-			} else if(isCollisionOccurred()){
-				roverFinalCoordinates.setX(roverFinalCoordinates.getX() + 1);
-				throw new Exception(String.format("Collision occurred rover stopped at: %s", finalPosition()));
-			}
-			break;
-		default:
-			break;
-		}
-	}
-
-	private boolean isCollisionOccurred() {
-		return roverFinalPositions.contains(finalPosition());
-	}
-
-	public RoverCoordinates getGridMinCoordinates() {
-		return gridMinCoordinates;
-	}
-
-	public RoverCoordinates getGridMaxCoordinates() {
-		return gridMaxCoordinates;
-	}
-
-	public RoverCoordinates getRoverInitialCoordinates() {
-		return roverInitialCoordinates;
-	}
-
-	public RoverCoordinates getRoverFinalCoordinates() {
-		return roverFinalCoordinates;
+		return String.join(", ", directions);
 	}
 
 }
